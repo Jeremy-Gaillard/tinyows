@@ -444,6 +444,7 @@ buffer *fe_kvp_bbox(ows * o, wfs_request * wr, buffer * layer_name, ows_bbox * b
   for (ln = geom->first ; ln ; ln = ln->next) {
 
     /* We use _ST_Intersects and && operator rather than ST_Intersects for performances issues */
+#if 0
     buffer_add_str(where, " (_ST_Intersects(");
     if (transform) buffer_add_str(where, "ST_Transform(");
     buffer_add_str(where, "\"");
@@ -462,6 +463,8 @@ buffer *fe_kvp_bbox(ows * o, wfs_request * wr, buffer * layer_name, ows_bbox * b
       buffer_add_str(where, ")");
     }
     buffer_add_str(where, ") AND ");
+#endif
+    buffer_add_str(where, " (");
     if (transform) buffer_add_str(where, "ST_Transform(");
     buffer_add_str(where, "\"");
     buffer_copy(where, ln->value);
@@ -471,6 +474,7 @@ buffer *fe_kvp_bbox(ows * o, wfs_request * wr, buffer * layer_name, ows_bbox * b
       buffer_add_int(where, srid);
       buffer_add_str(where, ")");
     }
+
     buffer_add_str(where, " && ");
     if (transform) buffer_add_str(where, "ST_Transform(");
     ows_bbox_to_query(o, wr->bbox, where);
